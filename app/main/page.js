@@ -65,7 +65,7 @@ export default function MainPage() {
           {matchups.map((pair, idx) => (
             <div key={idx} style={matchCard}>
               {pair.map(([id, name], teamIdx) => (
-                <>
+                <div key={id} style={{ display: "flex", alignItems: "center" }}>
                   {teamIdx === 1 && <span style={{ fontWeight: 700, margin: "0 8px" }}>VS</span>}
                   <Image
                     src={`/team-logos/${id}.png`}
@@ -74,7 +74,7 @@ export default function MainPage() {
                     alt={name}
                     style={{ background: "#fff", borderRadius: 8 }}
                   />
-                </>
+                </div>
               ))}
             </div>
           ))}
