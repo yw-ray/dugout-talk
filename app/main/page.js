@@ -99,7 +99,7 @@ export default function DugoutMain() {
         )}
 
         <Image
-          src="/profile.png"
+          src="/images/profile.png"
           width={36}
           height={36}
           alt="profile"
