@@ -34,7 +34,7 @@ export default function StartPage() {
       </h1>
 
       <img
-        src="/dugout-talk-kbo.png"
+        src="/images/dugout-talk-kbo.png"
         alt="dugout talk hero"
         style={{
           width: "100%",
