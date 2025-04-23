@@ -5,9 +5,11 @@ import { useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { ref, get } from "firebase/database";
 import { db, auth } from "@/lib/firebase";
+import { useRouter } from "next/navigation"; // 추가
 
 export default function DugoutMain() {
-  const [nickname, setNickname] = useState("익명 유저");
+  const [nickname, setNickname] = useState(null);
+  const router = useRouter(); // 추가
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -33,41 +35,59 @@ export default function DugoutMain() {
         backgroundSize: "cover",
         backgroundPosition: "center",
         minHeight: "100vh",
-        padding: "24px",
+        padding: "24px 16px",
         fontFamily: "Pretendard, sans-serif",
         color: "#fff",
+        maxWidth: "480px",      // ✅ 모바일 최대 폭 제한
+        margin: "0 auto",       // ✅ 가운데 정렬
       }}
     >
-      <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center", gap: 12, marginBottom: 16 }}>
-        <span style={{ fontWeight: 600 }}>{nickname}</span>
-        <Image src="/profile.png" width={36} height={36} alt="profile" style={{ borderRadius: "50%" }} />
+
+      <div style={{
+        display: "flex", justifyContent: "flex-end",
+        alignItems: "center", gap: 12, marginBottom: 16
+      }}>
+
+      {nickname === null ? (
+        <span style={{ fontWeight: 600, opacity: 0.5 }}></span>
+      ) : (
+        <button
+          onClick={() => router.push("/profile")}
+          style={{
+            background: "transparent",
+            border: "none",
+            color: "#fff",
+            fontWeight: 600,
+            cursor: "pointer",
+            fontSize: 14,
+            padding: 0,
+          }}
+        >
+          {nickname}
+        </button>
+      )}
+
+      {/* 프로필 이미지 클릭 → /profile */}
+      <Image
+        src="/profile.png"
+        width={36}
+        height={36}
+        alt="profile"
+        style={{ borderRadius: "50%", cursor: "pointer" }}
+        onClick={() => router.push("/profile")}
+      />
       </div>
 
-      <div style={noticeBox}>📢 이번 주 드립왕 이벤트가 시작되었습니다!</div>
-
-      <div style={blueBox}>
-        <h2 style={sectionTitle}>🖼 오늘의 짤 드립 챌린지</h2>
-        {[1, 2].map((num) => (
-          <div key={num} style={memeCard}>
-            <Image
-              src={`/images/meme${num}.jpg`}
-              width={300}
-              height={180}
-              alt={`meme-${num}`}
-              style={{ borderRadius: 12, width: "100%", height: "auto" }}
-            />
-            <input type="text" placeholder="이 짤에 어울리는 드립은?" style={inputStyle} />
-          </div>
-        ))}
+      <div style={{ textAlign: "center", marginBottom: 20 }}>
+        <div style={noticeBox}>
+          📢 이번 주 드립왕 이벤트가 시작되었습니다!
+        </div>
       </div>
 
       <div style={blueBox}>
         <h2 style={sectionTitle}>🧠 Dugout 예열 퀴즈</h2>
-        <p style={{ marginBottom: 8 }}>Q. 오늘 경기에서 가장 먼저 점수를 낼 팀은?</p>
-        <div style={{ display: "flex", gap: 12 }}>
-          <button style={yesBtn}>우리팀</button>
-          <button style={noBtn}>상대팀</button>
-        </div>
+        <p style={{ marginBottom: 8 }}>Q. 삼중살이란 무엇일까요?</p>
+        <input type="text" placeholder="" style={inputStyle} />
       </div>
 
       <div style={blueBox}>
@@ -88,10 +108,27 @@ export default function DugoutMain() {
         <h2 style={sectionTitle}>📊 팀별 응원지수</h2>
         <ul style={listStyle}>
           <li>LG 트윈스 🔥 10,240</li>
-          <li>SSG 랜더스 🔥 9,980</li>
+          <li>롯데 자이언츠 🔥 9,980</li>
           <li>기아 타이거즈 🔥 9,100</li>
         </ul>
       </div>
+
+      <div style={blueBox}>
+        <h2 style={sectionTitle}>🖼 오늘의 짤 드립 챌린지</h2>
+        {[1, 2].map((num) => (
+          <div key={num} style={memeCard}>
+            <Image
+              src={`/images/meme${num}.jpg`}
+              width={300}
+              height={180}
+              alt={`meme-${num}`}
+              style={{ borderRadius: 12, width: "auto", height: "20%" }}
+            />
+            <input type="text" placeholder="이 짤에 어울리는 드립은?" style={inputStyle} />
+          </div>
+        ))}
+      </div>
+
     </div>
   );
 }
@@ -105,6 +142,7 @@ const noticeBox = {
   fontSize: 14,
   display: "inline-block",
   textAlign: "center",
+  margin: "0 auto", // ✅ 이거 추가
 };
 
 const blueBox = {
